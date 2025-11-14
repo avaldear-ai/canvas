@@ -1,0 +1,2019 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Canvas Planes de Trabajo VN_TELF – Conversia</title>
+  <style>
+    :root {
+      --azul: #003466;
+      --gris-claro: #f4f4f4;
+      --gris-medio: #d4d4d4;
+      --gris-oscuro: #444;
+      --blanco: #ffffff;
+      --verde: #3a8f3a;
+      --rojo: #c0392b;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f7f7f9;
+      color: #222;
+    }
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: var(--azul);
+      color: var(--blanco);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .logo-placeholder {
+      height: 40px;
+      width: 220px;
+      background: #ffffff22;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .app-title {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      flex: 1;
+      margin: 0 24px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    button {
+      border-radius: 4px;
+      border: none;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .btn-primary {
+      background: var(--azul);
+      color: var(--blanco);
+    }
+
+    .btn-secondary {
+      background: var(--gris-medio);
+      color: #222;
+    }
+
+    .btn-danger {
+      background: var(--rojo);
+      color: var(--blanco);
+    }
+
+    .btn-link {
+      background: transparent;
+      color: var(--azul);
+      text-decoration: underline;
+      padding: 0;
+    }
+
+    .chip {
+      padding: 2px 8px;
+      border-radius: 16px;
+      font-size: 11px;
+      display: inline-block;
+    }
+
+    .chip-borrador { background: #bdc3c7; color: #2c3e50; }
+    .chip-activo   { background: #2980b9; color: #ecf0f1; }
+    .chip-cerrado  { background: #27ae60; color: #ecf0f1; }
+
+    .container {
+      padding: 16px 24px 32px 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--blanco);
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: var(--azul);
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--gris-oscuro);
+      margin-bottom: 4px;
+    }
+
+    .filters-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr)) auto auto;
+      gap: 8px;
+      margin-bottom: 12px;
+      align-items: flex-end;
+    }
+
+    label {
+      font-size: 12px;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="month"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 4px 6px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 12px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 12px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 4px 6px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--gris-claro);
+      font-weight: bold;
+    }
+
+    .table-actions {
+      white-space: nowrap;
+    }
+
+    .panel-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+      gap: 16px;
+    }
+
+    .panel-layout-full {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .kpi {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .kpi-sub {
+      font-size: 12px;
+      color: var(--gris-oscuro);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 12px;
+    }
+
+    .nav-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 4px;
+      position: sticky;
+      top: 56px;
+      background: #f7f7f9;
+      z-index: 40;
+    }
+
+    .nav-tab {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 12px;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .nav-tab.active {
+      border-color: var(--azul);
+      background: #e6eef7;
+      color: var(--azul);
+      font-weight: bold;
+    }
+
+    .small-note {
+      font-size: 11px;
+      color: var(--gris-oscuro);
+      margin-top: 4px;
+    }
+
+    .error {
+      border-color: var(--rojo) !important;
+      background: #fdecea;
+    }
+
+    .inline-kpis {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: var(--gris-claro);
+      display: inline-block;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .text-right { text-align: right; }
+    .text-center { text-align: center; }
+  </style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="logo-placeholder">
+    LOGO CONVERSIA
+  </div>
+  <div class="app-title">
+    Panel planes de trabajo – VN_TELF
+  </div>
+  <div class="header-right">
+    <span id="headerUser">Coordinador: VN_TELF</span>
+    <button class="btn-primary" onclick="nuevoPlanDesdePanel()">
+      + Nuevo plan VN_TELF
+    </button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- PANEL DE CONTROL (VISTA LISTA) -->
+  <div id="panelView">
+    <div class="card">
+      <div class="card-title">Histórico de planes de trabajo – VN_TELF</div>
+      <div class="card-subtitle">
+        Filtra por delegación, gestor, mes/año o estado para revisar planes ya creados.
+      </div>
+
+      <div class="filters-row">
+        <div>
+          <label for="fDelegacion">Delegación</label>
+          <select id="fDelegacion" onchange="renderTablaPlanes()">
+            <option value="">Todas</option>
+          </select>
+        </div>
+        <div>
+          <label for="fGestor">Gestor</label>
+          <select id="fGestor" onchange="renderTablaPlanes()">
+            <option value="">Todos</option>
+          </select>
+        </div>
+        <div>
+          <label for="fMes">Mes</label>
+          <select id="fMes" onchange="renderTablaPlanes()">
+            <option value="">Todos</option>
+            <option value="1">Enero</option>
+            <option value="2">Febrero</option>
+            <option value="3">Marzo</option>
+            <option value="4">Abril</option>
+            <option value="5">Mayo</option>
+            <option value="6">Junio</option>
+            <option value="7">Julio</option>
+            <option value="8">Agosto</option>
+            <option value="9">Septiembre</option>
+            <option value="10">Octubre</option>
+            <option value="11">Noviembre</option>
+            <option value="12">Diciembre</option>
+          </select>
+        </div>
+        <div>
+          <label for="fAnio">Año</label>
+          <input type="number" id="fAnio" min="2020" max="2100" onchange="renderTablaPlanes()" />
+        </div>
+        <div>
+          <label for="fEstado">Estado</label>
+          <select id="fEstado" onchange="renderTablaPlanes()">
+            <option value="">Todos</option>
+            <option value="Borrador">Borrador</option>
+            <option value="Activo">Activo</option>
+            <option value="Cerrado">Cerrado</option>
+          </select>
+        </div>
+        <div>
+          <button class="btn-secondary" onclick="limpiarFiltrosPanel()">Limpiar filtros</button>
+        </div>
+      </div>
+
+      <div class="panel-layout" id="panelGrid">
+        <div class="card" style="margin:0;">
+          <div class="card-subtitle">Planes registrados</div>
+          <table id="tablaPlanes">
+            <thead>
+              <tr>
+                <th>Gestor</th>
+                <th>Delegación</th>
+                <th>Mes/Año</th>
+                <th>Fecha creación</th>
+                <th>Estado</th>
+                <th>Mini resumen plan acción</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Relleno por JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card" id="detallePlanCard">
+          <div class="card-title">Detalle rápido del plan</div>
+          <div id="detallePlanContenido" class="small-note">
+            Selecciona un plan de la tabla para ver aquí los KPIs clave.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDITOR (VISTA PLAN) -->
+  <div id="editorView" class="hidden">
+    <div class="card">
+      <div class="card-title" id="editorTitulo">Plan de trabajo VN_TELF</div>
+      <div class="inline-kpis" style="justify-content: space-between;">
+        <div class="inline-kpis">
+          <span>Estado del plan:</span>
+          <select id="campoEstadoPlan" style="width:auto;" onchange="marcarDirty()">
+            <option value="Borrador">Borrador</option>
+            <option value="Activo">Activo</option>
+            <option value="Cerrado">Cerrado</option>
+          </select>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-secondary" onclick="guardarPlan(false)">Guardar borrador</button>
+          <button class="btn-primary" onclick="guardarPlan(true)">Crear plan de trabajo (Word)</button>
+          <button class="btn-link" onclick="volverAlPanel()">Volver al panel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bloque 0 – Identificación -->
+    <div class="card" id="bloque0">
+      <div class="card-title">0. Identificación del plan</div>
+      <div class="two-col">
+        <div>
+          <label>Equipo</label>
+          <input type="text" value="VN_TELF" disabled />
+        </div>
+        <div>
+          <label for="campoDelegacion">Delegación</label>
+          <select id="campoDelegacion" onchange="marcarDirty()">
+            <!-- JS rellena -->
+          </select>
+        </div>
+        <div>
+          <label for="campoGestor">Gestor</label>
+          <select id="campoGestor" onchange="onCambioGestorMesAnio()">
+            <!-- JS rellena -->
+          </select>
+        </div>
+        <div>
+          <label for="campoMes">Mes</label>
+          <select id="campoMes" onchange="onCambioGestorMesAnio()">
+            <option value="">Selecciona…</option>
+            <option value="1">Enero</option>
+            <option value="2">Febrero</option>
+            <option value="3">Marzo</option>
+            <option value="4">Abril</option>
+            <option value="5">Mayo</option>
+            <option value="6">Junio</option>
+            <option value="7">Julio</option>
+            <option value="8">Agosto</option>
+            <option value="9">Septiembre</option>
+            <option value="10">Octubre</option>
+            <option value="11">Noviembre</option>
+            <option value="12">Diciembre</option>
+          </select>
+        </div>
+        <div>
+          <label for="campoAnio">Año</label>
+          <input type="number" id="campoAnio" min="2020" max="2100" onchange="onCambioGestorMesAnio()" />
+        </div>
+        <div>
+          <label for="campoFechaCreacion">Fecha creación</label>
+          <input type="date" id="campoFechaCreacion" disabled />
+        </div>
+      </div>
+
+      <div id="bloquePlanAnteriorAviso" class="small-note" style="margin-top:8px;"></div>
+
+      <div id="bloqueSeguimientoAnterior" class="card" style="margin-top:8px; background:#fafafa;">
+        <div class="card-subtitle">Seguimiento plan anterior</div>
+        <table id="tablaSeguimientoAnterior">
+          <thead>
+            <tr>
+              <th>Punto de mejora anterior</th>
+              <th>Criterio</th>
+              <th>Estado</th>
+              <th>Comentario</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rellena JS en base a plan anterior -->
+          </tbody>
+        </table>
+        <div class="small-note">
+          Marca para cada punto si se ha conseguido o no antes de fijar el nuevo plan.
+        </div>
+      </div>
+    </div>
+
+    <!-- Barra de navegación por bloques -->
+    <div class="nav-tabs">
+      <div class="nav-tab active" data-target="bloque1" onclick="scrollToBloque('bloque1', this)">1. Facturación</div>
+      <div class="nav-tab" data-target="bloque2" onclick="scrollToBloque('bloque2', this)">2. Ratios</div>
+      <div class="nav-tab" data-target="bloque3" onclick="scrollToBloque('bloque3', this)">3. DN y cobro</div>
+      <div class="nav-tab" data-target="bloque4" onclick="scrollToBloque('bloque4', this)">4. Incidencias</div>
+      <div class="nav-tab" data-target="bloque5" onclick="scrollToBloque('bloque5', this)">5. Análisis cuantitativo</div>
+      <div class="nav-tab" data-target="bloque6" onclick="scrollToBloque('bloque6', this)">6. Análisis cualitativo</div>
+      <div class="nav-tab" data-target="bloque7" onclick="scrollToBloque('bloque7', this)">7. Plan de acción</div>
+      <div class="nav-tab" data-target="bloque8" onclick="scrollToBloque('bloque8', this)">8. Firma</div>
+    </div>
+
+    <!-- Bloque 1 – Facturación objetivo -->
+    <div class="card" id="bloque1">
+      <div class="card-title">1. Facturación objetivo</div>
+      <div class="two-col">
+        <div>
+          <label for="campoFacturacionReal">Facturación real del mes (€)</label>
+          <input type="number" id="campoFacturacionReal" step="0.01" min="0" oninput="recalcularFacturacion()" />
+          <label for="campoObjetivoMes" style="margin-top:6px;">Objetivo de facturación del mes (€)</label>
+          <input type="number" id="campoObjetivoMes" step="0.01" min="0" oninput="recalcularFacturacion()" />
+        </div>
+        <div>
+          <div class="kpi" id="kpiCumplimiento">Cumplimiento objetivo: –</div>
+          <div class="kpi-sub" id="kpiDiferencia">Diferencia vs objetivo: –</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bloque 2 – Ratios -->
+    <div class="card" id="bloque2">
+      <div class="card-title">2. Datos cuantitativos – Ratios de gestión</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Gestión media</th>
+            <th>Ratio venta captación</th>
+            <th>Ratio venta C.Aspy</th>
+            <th>Ratio venta CPS</th>
+            <th>Ratio venta Legalitas</th>
+            <th>Ratio venta VC</th>
+            <th>Ticket medio total (€)</th>
+            <th>Ticket medio captación (€)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="number" id="ratioGestionMedia" step="0.01" oninput="marcarDirty()" /></td>
+            <td><input type="number" id="ratioCaptacion" step="0.01" oninput="marcarDirty()" /></td>
+            <td><input type="number" id="ratioCAspy" step="0.01" oninput="marcarDirty()" /></td>
+            <td><input type="number" id="ratioCPS" step="0.01" oninput="marcarDirty()" /></td>
+            <td><input type="number" id="ratioLegalitas" step="0.01" oninput="marcarDirty()" /></td>
+            <td><input type="number" id="ratioVC" step="0.01" oninput="marcarDirty()" /></td>
+            <td><input type="number" id="ticketMedioTotal" step="0.01" oninput="marcarDirty()" /></td>
+            <td><input type="number" id="ticketMedioCaptacion" step="0.01" oninput="marcarDirty()" /></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="small-note">
+        Introduce los ratios en valores numéricos. El sistema puede usar estos datos para proponer el plan de acción.
+      </div>
+    </div>
+
+    <!-- Bloque 3 – DN, aplazamiento, forma de pago -->
+    <div class="card" id="bloque3">
+      <div class="card-title">3. Devolución neta, aplazamiento y forma de pago</div>
+
+      <div class="card-subtitle">3.1. Devolución neta</div>
+      <table>
+        <tbody>
+          <tr>
+            <th>Facturación vencida total (€)</th>
+            <td><input type="number" id="dnFacturacionTotal" step="0.01" min="0" oninput="recalcularDN()" /></td>
+          </tr>
+          <tr>
+            <th>Devolución neta (€)</th>
+            <td><input type="number" id="dnImporte" step="0.01" min="0" oninput="recalcularDN()" /></td>
+          </tr>
+          <tr>
+            <th>% DN sobre facturado</th>
+            <td id="dnPorcentaje">–</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="small-note">
+        Introduce facturación vencida y DN en euros. El % se calcula automáticamente.
+      </div>
+
+      <div class="two-col" style="margin-top:12px;">
+        <div>
+          <div class="card-subtitle">3.2. Distribución por aplazamiento</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Tramo aplazamiento</th>
+                <th>Facturación (€)</th>
+                <th>% sobre total</th>
+              </tr>
+            </thead>
+            <tbody id="tablaAplazamientoBody">
+              <!-- Rellenado por JS -->
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="card-subtitle">3.3. Distribución por forma de pago</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Forma de pago</th>
+                <th>Facturación (€)</th>
+                <th>DN (€)</th>
+                <th>% DN</th>
+                <th>% peso facturación</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Recibo</td>
+                <td><input type="number" id="fpReciboFact" step="0.01" min="0" oninput="recalcularFormaPago()" /></td>
+                <td><input type="number" id="fpReciboDN" step="0.01" min="0" oninput="recalcularFormaPago()" /></td>
+                <td id="fpReciboPctDN">–</td>
+                <td id="fpReciboPctPeso">–</td>
+              </tr>
+              <tr>
+                <td>No recibo</td>
+                <td><input type="number" id="fpNoReciboFact" step="0.01" min="0" oninput="recalcularFormaPago()" /></td>
+                <td><input type="number" id="fpNoReciboDN" step="0.01" min="0" oninput="recalcularFormaPago()" /></td>
+                <td id="fpNoReciboPctDN">–</td>
+                <td id="fpNoReciboPctPeso">–</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="small-note">
+        Aplazamientos y formas de pago se introducen como importes; los porcentajes se calculan automáticamente.
+      </div>
+    </div>
+
+    <!-- Bloque 4 – Incidencias formación -->
+    <div class="card" id="bloque4">
+      <div class="card-title">4. Incidencias de formación</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Facturación formación total (€)</th>
+            <th>Facturación sin incidencia (€)</th>
+            <th>Facturación con incidencia (€)</th>
+            <th>% facturación con incidencia</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="number" id="incFormTotal" step="0.01" min="0" oninput="recalcularIncidencias()" /></td>
+            <td><input type="number" id="incFormSin" step="0.01" min="0" oninput="recalcularIncidencias()" /></td>
+            <td><input type="number" id="incFormCon" step="0.01" min="0" oninput="recalcularIncidencias()" /></td>
+            <td id="incFormPctCon">–</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="small-note">
+        Sin incidencia = estado Cerrado o Pendiente AVI. Aquí introduces importes; el porcentaje lo calcula el sistema.
+      </div>
+    </div>
+
+    <!-- Bloque 5 – Análisis cuantitativo -->
+    <div class="card" id="bloque5">
+      <div class="card-title">5. Análisis cuantitativo</div>
+      <div class="two-col">
+        <div>
+          <label for="analisisFacturacion">FACTURACIÓN</label>
+          <textarea id="analisisFacturacion" oninput="marcarDirty()"></textarea>
+          <label for="analisisRatios">RATIOS</label>
+          <textarea id="analisisRatios" oninput="marcarDirty()"></textarea>
+          <label for="analisisDedicacion">DEDICACIÓN</label>
+          <textarea id="analisisDedicacion" oninput="marcarDirty()"></textarea>
+        </div>
+        <div>
+          <label for="analisisDevoluciones">DEVOLUCIONES</label>
+          <textarea id="analisisDevoluciones" oninput="marcarDirty()"></textarea>
+          <label for="analisisIncidencias">INCIDENCIAS</label>
+          <textarea id="analisisIncidencias" oninput="marcarDirty()"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bloque 6 – Análisis cualitativo -->
+    <div class="card" id="bloque6">
+      <div class="card-title">6. Análisis cualitativo</div>
+      <div class="two-col">
+        <div>
+          <label for="analisisLlamadas">LLAMADAS</label>
+          <textarea id="analisisLlamadas" oninput="marcarDirty()"></textarea>
+        </div>
+        <div>
+          <label for="analisisFactoresInternos">FACTORES INTERNOS</label>
+          <textarea id="analisisFactoresInternos" oninput="marcarDirty()"></textarea>
+        </div>
+      </div>
+      <label for="analisisOtros" style="margin-top:8px;">OTROS / OBSERVACIONES</label>
+      <textarea id="analisisOtros" oninput="marcarDirty()"></textarea>
+    </div>
+
+    <!-- Bloque 7 – Plan de acción -->
+    <div class="card" id="bloque7">
+      <div class="card-title">7. Plan de acción mensual</div>
+      <div class="inline-kpis" style="justify-content: space-between; margin-bottom:6px;">
+        <div class="small-note">
+          Diseña acciones concretas, medibles y realizables en máximo 1 mes.
+        </div>
+        <button class="btn-secondary" onclick="generarPropuestaPlanAccion()">Generar propuesta automática</button>
+      </div>
+
+      <table id="tablaPlanAccion">
+        <thead>
+          <tr>
+            <th>Punto de mejora</th>
+            <th>Criterios de evaluación</th>
+            <th>Acciones concretas</th>
+            <th>Plazo</th>
+            <th class="text-center">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Filas de plan de acción -->
+        </tbody>
+      </table>
+      <button class="btn-secondary" style="margin-top:6px;" onclick="anadirFilaPlanAccion()">+ Añadir fila</button>
+
+      <div id="bloqueSeguimientoAnteriorDentro" class="card" style="margin-top:12px; background:#fafafa;">
+        <div class="card-subtitle">Seguimiento plan anterior (resumen para el Word)</div>
+        <div class="small-note">
+          La tabla de seguimiento de arriba se incluirá en el Word para dejar constancia de los resultados del plan anterior.
+        </div>
+      </div>
+    </div>
+
+    <!-- Bloque 8 – Firma -->
+    <div class="card" id="bloque8">
+      <div class="card-title">8. Firma</div>
+      <div class="two-col">
+        <div class="text-center">
+          <div>Gestor</div>
+          <div style="margin:24px 0; border-bottom:1px solid #aaa;">&nbsp;</div>
+          <div id="firmaNombreGestor" style="font-size:12px;"></div>
+        </div>
+        <div class="text-center">
+          <div>Coordinador</div>
+          <div style="margin:24px 0; border-bottom:1px solid #aaa;">&nbsp;</div>
+          <div id="firmaNombreCoord" style="font-size:12px;">VN_TELF</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;">
+        <label for="firmaFecha">Fecha de firma</label>
+        <input type="date" id="firmaFecha" onchange="marcarDirty()" />
+      </div>
+    </div>
+
+  </div> <!-- /editorView -->
+
+</div> <!-- /container -->
+
+<script>
+// ==== Datos maestros VN_TELF (desde informes) ====
+const delegaciones = ["VN_TLF_PROV", "VN_TLF_SIGNO", "VN_TLF_PYME"];
+
+const gestores = [
+  "Gabriel Bolart Alonso",
+  "Susana Martínez Míguez",
+  "Pau Segura Roca",
+  "Pol Comellas Sancho",
+  "Joan Gutiérrez Llosas",
+  "Lidia González Girón",
+  "Fatima Benslimani Seydi Jebari",
+  "Rebeca Gavilán Navarro",
+  "Alba Ginés Sánchez",
+  "Ángela Francisco Moral",
+  "Federico Nahuel Fustonini",
+  "Luciano Abad Juárez",
+  "Ghizlane Saber",
+  "Susana Clamosa Caballero"
+];
+
+// Tramos de aplazamiento estándar
+const tramosAplazamiento = [
+  "≤30 días",
+  "30–60 días",
+  "60–90 días",
+  "90–120 días",
+  ">120 días"
+];
+
+// Estado de la app
+let planes = [];
+let planActualId = null;
+let dirty = false;
+
+// ==== Utilidades ====
+function hoyISO() {
+  const d = new Date();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${m}-${day}`;
+}
+
+function formatearMesAnio(mes, anio) {
+  const nombres = ["", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+  if (!mes || !anio) return "-";
+  return `${nombres[mes]} ${anio}`;
+}
+
+function getChipEstado(estado) {
+  if (estado === "Cerrado") {
+    return '<span class="chip chip-cerrado">Cerrado</span>';
+  }
+  if (estado === "Activo") {
+    return '<span class="chip chip-activo">Activo</span>';
+  }
+  return '<span class="chip chip-borrador">Borrador</span>';
+}
+
+function toNum(v) {
+  const n = parseFloat(v);
+  return isNaN(n) ? 0 : n;
+}
+
+function pct(num, den) {
+  if (!den || den === 0) return null;
+  return (num / den) * 100;
+}
+
+function guardarEnLocalStorage() {
+  localStorage.setItem("planesVN_TELF", JSON.stringify(planes));
+}
+
+function cargarDesdeLocalStorage() {
+  const raw = localStorage.getItem("planesVN_TELF");
+  if (raw) {
+    try {
+      planes = JSON.parse(raw);
+    } catch {
+      planes = [];
+    }
+  }
+}
+
+// ==== Inicialización ====
+function inicializar() {
+  // Filtros delegación y gestor
+  const fDelegacion = document.getElementById("fDelegacion");
+  delegaciones.forEach(d => {
+    const opt = document.createElement("option");
+    opt.value = d;
+    opt.textContent = d;
+    fDelegacion.appendChild(opt);
+  });
+  const fGestor = document.getElementById("fGestor");
+  gestores.forEach(g => {
+    const opt = document.createElement("option");
+    opt.value = g;
+    opt.textContent = g;
+    fGestor.appendChild(opt);
+  });
+
+  // Campos Bloque 0
+  const cDeleg = document.getElementById("campoDelegacion");
+  delegaciones.forEach(d => {
+    const opt = document.createElement("option");
+    opt.value = d;
+    opt.textContent = d;
+    cDeleg.appendChild(opt);
+  });
+
+  const cGest = document.getElementById("campoGestor");
+  gestores.forEach(g => {
+    const opt = document.createElement("option");
+    opt.value = g;
+    opt.textContent = g;
+    cGest.appendChild(opt);
+  });
+
+  // Tramos aplazamiento
+  const tAplBody = document.getElementById("tablaAplazamientoBody");
+  tramosAplazamiento.forEach((tramo, idx) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${tramo}</td>
+      <td><input type="number" step="0.01" min="0" id="aplFact_${idx}" oninput="recalcularAplazamiento()" /></td>
+      <td id="aplPct_${idx}">–</td>
+    `;
+    tAplBody.appendChild(tr);
+  });
+
+  // Seguimiento anterior vacío
+  document.getElementById("bloqueSeguimientoAnterior").style.display = "none";
+
+  // Cargar planes
+  cargarDesdeLocalStorage();
+  renderTablaPlanes();
+  actualizarDetallePlan(null);
+}
+
+document.addEventListener("DOMContentLoaded", inicializar);
+
+// ==== Panel de control ====
+function limpiarFiltrosPanel() {
+  document.getElementById("fDelegacion").value = "";
+  document.getElementById("fGestor").value = "";
+  document.getElementById("fMes").value = "";
+  document.getElementById("fAnio").value = "";
+  document.getElementById("fEstado").value = "";
+  renderTablaPlanes();
+}
+
+function renderTablaPlanes() {
+  const tbody = document.querySelector("#tablaPlanes tbody");
+  tbody.innerHTML = "";
+
+  const fDeleg = document.getElementById("fDelegacion").value;
+  const fGest = document.getElementById("fGestor").value;
+  const fMes = document.getElementById("fMes").value;
+  const fAnio = document.getElementById("fAnio").value;
+  const fEstado = document.getElementById("fEstado").value;
+
+  let filtrados = [...planes];
+
+  if (fDeleg) filtrados = filtrados.filter(p => p.delegacion === fDeleg);
+  if (fGest) filtrados = filtrados.filter(p => p.gestor === fGest);
+  if (fMes) filtrados = filtrados.filter(p => String(p.mes) === fMes);
+  if (fAnio) filtrados = filtrados.filter(p => String(p.anio) === fAnio);
+  if (fEstado) filtrados = filtrados.filter(p => p.estadoPlan === fEstado);
+
+  filtrados.sort((a, b) => {
+    if (a.anio !== b.anio) return b.anio - a.anio;
+    if (a.mes !== b.mes) return b.mes - a.mes;
+    return a.gestor.localeCompare(b.gestor);
+  });
+
+  filtrados.forEach(p => {
+    const tr = document.createElement("tr");
+    tr.onclick = () => actualizarDetallePlan(p.id);
+    const mini = p.planAccion && p.planAccion.length
+      ? "Focos: " + p.planAccion.slice(0, 3).map(x => x.punto).join("; ")
+      : "Sin plan de acción";
+
+    tr.innerHTML = `
+      <td>${p.gestor}</td>
+      <td>${p.delegacion || "-"}</td>
+      <td>${formatearMesAnio(p.mes, p.anio)}</td>
+      <td>${p.fechaCreacion || "-"}</td>
+      <td>${getChipEstado(p.estadoPlan || "Borrador")}</td>
+      <td>${mini}</td>
+      <td class="table-actions text-center">
+        <button class="btn-secondary" onclick="event.stopPropagation(); abrirPlan('${p.id}')">Abrir</button>
+        <button class="btn-primary" onclick="event.stopPropagation(); descargarWordDesdePanel('${p.id}')">Word</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  if (!filtrados.length) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td colspan="7" class="text-center small-note">No hay planes que cumplan los filtros.</td>`;
+    tbody.appendChild(tr);
+    actualizarDetallePlan(null);
+  }
+}
+
+function actualizarDetallePlan(id) {
+  const div = document.getElementById("detallePlanContenido");
+  if (!id) {
+    div.innerHTML = 'Selecciona un plan de la tabla para ver aquí los KPIs clave.';
+    return;
+  }
+  const p = planes.find(x => x.id === id);
+  if (!p) {
+    div.innerHTML = 'Plan no encontrado.';
+    return;
+  }
+
+  const dnPct = (p.dn && p.dn.pctDN != null) ? `${p.dn.pctDN.toFixed(2)} %` : "–";
+  const incPct = (p.incidencias && p.incidencias.pctConIncidencia != null)
+    ? `${p.incidencias.pctConIncidencia.toFixed(2)} %` : "–";
+  const compPct = (p.facturacion && p.facturacion.pctCumplimiento != null)
+    ? `${p.facturacion.pctCumplimiento.toFixed(2)} %` : "–";
+
+  const focos = p.planAccion && p.planAccion.length
+    ? p.planAccion.slice(0, 3).map(x => `<li>${x.punto}</li>`).join("")
+    : "<li>Sin puntos definidos</li>";
+
+  div.innerHTML = `
+    <div><strong>Gestor:</strong> ${p.gestor}</div>
+    <div><strong>Mes/Año:</strong> ${formatearMesAnio(p.mes, p.anio)}</div>
+    <hr/>
+    <div><strong>Cumplimiento objetivo:</strong> ${compPct}</div>
+    <div><strong>% DN:</strong> ${dnPct}</div>
+    <div><strong>% incidencias formación:</strong> ${incPct}</div>
+    <div style="margin-top:8px;"><strong>Focos plan acción:</strong></div>
+    <ul style="padding-left:16px; margin-top:4px;">${focos}</ul>
+  `;
+}
+
+// ==== Navegación entre vistas ====
+function mostrarEditor() {
+  document.getElementById("panelView").classList.add("hidden");
+  document.getElementById("editorView").classList.remove("hidden");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function volverAlPanel() {
+  if (dirty && !confirm("Hay cambios sin guardar. ¿Salir igualmente al panel?")) return;
+  document.getElementById("panelView").classList.remove("hidden");
+  document.getElementById("editorView").classList.add("hidden");
+  planActualId = null;
+  dirty = false;
+  renderTablaPlanes();
+}
+
+function nuevoPlanDesdePanel() {
+  if (dirty && !confirm("Hay cambios sin guardar. ¿Perderlos y crear un plan nuevo?")) return;
+  crearNuevoPlan();
+  mostrarEditor();
+}
+
+function abrirPlan(id) {
+  if (dirty && !confirm("Hay cambios sin guardar. ¿Perderlos y abrir otro plan?")) return;
+  cargarPlanEnEditor(id);
+  mostrarEditor();
+}
+
+function descargarWordDesdePanel(id) {
+  const p = planes.find(x => x.id === id);
+  if (!p) return;
+  generarWordDesdeObjeto(p);
+}
+
+// ==== Editor: creación y carga ====
+function crearNuevoPlan() {
+  planActualId = null;
+  dirty = false;
+
+  document.getElementById("campoDelegacion").value = delegaciones[0] || "";
+  document.getElementById("campoGestor").value = gestores[0] || "";
+  document.getElementById("campoMes").value = "";
+  document.getElementById("campoAnio").value = new Date().getFullYear();
+  document.getElementById("campoFechaCreacion").value = hoyISO();
+  document.getElementById("campoEstadoPlan").value = "Borrador";
+
+  document.getElementById("bloquePlanAnteriorAviso").innerHTML = "";
+  document.getElementById("bloqueSeguimientoAnterior").style.display = "none";
+  document.querySelector("#tablaSeguimientoAnterior tbody").innerHTML = "";
+
+  // Bloque 1
+  document.getElementById("campoFacturacionReal").value = "";
+  document.getElementById("campoObjetivoMes").value = "";
+  document.getElementById("kpiCumplimiento").textContent = "Cumplimiento objetivo: –";
+  document.getElementById("kpiDiferencia").textContent = "Diferencia vs objetivo: –";
+
+  // Bloque 2
+  [
+    "ratioGestionMedia", "ratioCaptacion","ratioCAspy","ratioCPS",
+    "ratioLegalitas","ratioVC","ticketMedioTotal","ticketMedioCaptacion"
+  ].forEach(id => document.getElementById(id).value = "");
+
+  // Bloque 3
+  document.getElementById("dnFacturacionTotal").value = "";
+  document.getElementById("dnImporte").value = "";
+  document.getElementById("dnPorcentaje").textContent = "–";
+
+  tramosAplazamiento.forEach((_, idx) => {
+    document.getElementById(`aplFact_${idx}`).value = "";
+    document.getElementById(`aplPct_${idx}`).textContent = "–";
+  });
+
+  document.getElementById("fpReciboFact").value = "";
+  document.getElementById("fpReciboDN").value = "";
+  document.getElementById("fpNoReciboFact").value = "";
+  document.getElementById("fpNoReciboDN").value = "";
+  document.getElementById("fpReciboPctDN").textContent = "–";
+  document.getElementById("fpReciboPctPeso").textContent = "–";
+  document.getElementById("fpNoReciboPctDN").textContent = "–";
+  document.getElementById("fpNoReciboPctPeso").textContent = "–";
+
+  // Bloque 4
+  document.getElementById("incFormTotal").value = "";
+  document.getElementById("incFormSin").value = "";
+  document.getElementById("incFormCon").value = "";
+  document.getElementById("incFormPctCon").textContent = "–";
+
+  // Bloques 5 y 6
+  [
+    "analisisFacturacion","analisisRatios","analisisDedicacion",
+    "analisisDevoluciones","analisisIncidencias","analisisLlamadas",
+    "analisisFactoresInternos","analisisOtros"
+  ].forEach(id => document.getElementById(id).value = "");
+
+  // Bloque 7 – plan de acción
+  document.querySelector("#tablaPlanAccion tbody").innerHTML = "";
+  anadirFilaPlanAccion();
+
+  // Bloque 8 – firma
+  document.getElementById("firmaNombreGestor").textContent = document.getElementById("campoGestor").value;
+  document.getElementById("firmaFecha").value = hoyISO();
+
+  document.getElementById("editorTitulo").textContent = "Plan de trabajo VN_TELF – NUEVO";
+}
+
+function cargarPlanEnEditor(id) {
+  const p = planes.find(x => x.id === id);
+  if (!p) return;
+  planActualId = id;
+  dirty = false;
+
+  document.getElementById("campoDelegacion").value = p.delegacion || delegaciones[0] || "";
+  document.getElementById("campoGestor").value = p.gestor || gestores[0] || "";
+  document.getElementById("campoMes").value = p.mes || "";
+  document.getElementById("campoAnio").value = p.anio || new Date().getFullYear();
+  document.getElementById("campoFechaCreacion").value = p.fechaCreacion || hoyISO();
+  document.getElementById("campoEstadoPlan").value = p.estadoPlan || "Borrador";
+
+  document.getElementById("editorTitulo").textContent = `Plan de trabajo VN_TELF – ${p.gestor} – ${formatearMesAnio(p.mes, p.anio)}`;
+
+  // Plan anterior (solo aviso; seguimiento ya está en el propio plan)
+  if (p.planAnteriorInfo) {
+    document.getElementById("bloquePlanAnteriorAviso").innerHTML =
+      `<span class="pill">Plan anterior: ${p.planAnteriorInfo.mesAnio}</span> ` +
+      `<span class="pill">Cumplimiento objetivo: ${p.planAnteriorInfo.pctCumplimiento.toFixed(2)} %</span> ` +
+      `<span class="pill">Estado: ${p.planAnteriorInfo.estado}</span>`;
+  } else {
+    document.getElementById("bloquePlanAnteriorAviso").innerHTML = "";
+  }
+
+  // Seguimiento anterior
+  const seg = p.planAnteriorSeguimiento || [];
+  const tbodySeg = document.querySelector("#tablaSeguimientoAnterior tbody");
+  tbodySeg.innerHTML = "";
+  if (seg.length) {
+    document.getElementById("bloqueSeguimientoAnterior").style.display = "block";
+    seg.forEach(row => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${row.puntoAnterior}</td>
+        <td>${row.criterioAnterior}</td>
+        <td>
+          <select onchange="marcarDirty()">
+            <option value="">–</option>
+            <option value="CONSEGUIDO" ${row.estado === "CONSEGUIDO" ? "selected" : ""}>Conseguido</option>
+            <option value="NO_CONSEGUIDO" ${row.estado === "NO_CONSEGUIDO" ? "selected" : ""}>No conseguido</option>
+            <option value="NO_APLICA" ${row.estado === "NO_APLICA" ? "selected" : ""}>No aplica</option>
+          </select>
+        </td>
+        <td><input type="text" value="${row.comentario || ""}" oninput="marcarDirty()" /></td>
+      `;
+      tbodySeg.appendChild(tr);
+    });
+  } else {
+    document.getElementById("bloqueSeguimientoAnterior").style.display = "none";
+  }
+
+  // Bloque 1
+  const f = p.facturacion || {};
+  document.getElementById("campoFacturacionReal").value = f.real || "";
+  document.getElementById("campoObjetivoMes").value = f.objetivo || "";
+  if (f.pctCumplimiento != null) {
+    document.getElementById("kpiCumplimiento").textContent =
+      `Cumplimiento objetivo: ${f.pctCumplimiento.toFixed(2)} %`;
+  } else {
+    document.getElementById("kpiCumplimiento").textContent = "Cumplimiento objetivo: –";
+  }
+  if (f.diferencia != null) {
+    const signo = f.diferencia >= 0 ? "+" : "";
+    document.getElementById("kpiDiferencia").textContent =
+      `Diferencia vs objetivo: ${signo}${f.diferencia.toFixed(2)} €`;
+  } else {
+    document.getElementById("kpiDiferencia").textContent = "Diferencia vs objetivo: –";
+  }
+
+  // Bloque 2 – ratios
+  const r = p.ratios || {};
+  document.getElementById("ratioGestionMedia").value = r.gestionMedia ?? "";
+  document.getElementById("ratioCaptacion").value = r.ventaCaptacion ?? "";
+  document.getElementById("ratioCAspy").value = r.ventaCAspy ?? "";
+  document.getElementById("ratioCPS").value = r.ventaCPS ?? "";
+  document.getElementById("ratioLegalitas").value = r.ventaLegalitas ?? "";
+  document.getElementById("ratioVC").value = r.ventaVC ?? "";
+  document.getElementById("ticketMedioTotal").value = r.ticketMedioTotal ?? "";
+  document.getElementById("ticketMedioCaptacion").value = r.ticketMedioCaptacion ?? "";
+
+  // Bloque 3 – DN
+  const dn = p.dn || {};
+  document.getElementById("dnFacturacionTotal").value = dn.facturacionTotal ?? "";
+  document.getElementById("dnImporte").value = dn.dnImporte ?? "";
+  document.getElementById("dnPorcentaje").textContent =
+    dn.pctDN != null ? dn.pctDN.toFixed(2) + " %" : "–";
+
+  // Aplazamiento
+  const apl = p.aplazamiento || {};
+  tramosAplazamiento.forEach((tramo, idx) => {
+    const reg = apl[tramo] || {};
+    document.getElementById(`aplFact_${idx}`).value = reg.facturacion ?? "";
+    document.getElementById(`aplPct_${idx}`).textContent =
+      reg.pct != null ? reg.pct.toFixed(2) + " %" : "–";
+  });
+
+  // Forma de pago
+  const fp = p.formaPago || {};
+  const rec = fp.recibo || {};
+  const nrec = fp.noRecibo || {};
+  document.getElementById("fpReciboFact").value = rec.facturacion ?? "";
+  document.getElementById("fpReciboDN").value = rec.dn ?? "";
+  document.getElementById("fpReciboPctDN").textContent =
+    rec.pctDN != null ? rec.pctDN.toFixed(2) + " %" : "–";
+  document.getElementById("fpReciboPctPeso").textContent =
+    rec.pctPeso != null ? rec.pctPeso.toFixed(2) + " %" : "–";
+
+  document.getElementById("fpNoReciboFact").value = nrec.facturacion ?? "";
+  document.getElementById("fpNoReciboDN").value = nrec.dn ?? "";
+  document.getElementById("fpNoReciboPctDN").textContent =
+    nrec.pctDN != null ? nrec.pctDN.toFixed(2) + " %" : "–";
+  document.getElementById("fpNoReciboPctPeso").textContent =
+    nrec.pctPeso != null ? nrec.pctPeso.toFixed(2) + " %" : "–";
+
+  // Bloque 4 – incidencias
+  const inc = p.incidencias || {};
+  document.getElementById("incFormTotal").value = inc.total ?? "";
+  document.getElementById("incFormSin").value = inc.sin ?? "";
+  document.getElementById("incFormCon").value = inc.con ?? "";
+  document.getElementById("incFormPctCon").textContent =
+    inc.pctConIncidencia != null ? inc.pctConIncidencia.toFixed(2) + " %" : "–";
+
+  // Bloques 5 y 6 – análisis
+  const aq = p.analisisCuant || {};
+  const ac = p.analisisCual || {};
+  document.getElementById("analisisFacturacion").value = aq.FACTURACION || "";
+  document.getElementById("analisisRatios").value = aq.RATIOS || "";
+  document.getElementById("analisisDedicacion").value = aq.DEDICACION || "";
+  document.getElementById("analisisDevoluciones").value = aq.DEVOLUCIONES || "";
+  document.getElementById("analisisIncidencias").value = aq.INCIDENCIAS || "";
+
+  document.getElementById("analisisLlamadas").value = ac.LLAMADAS || "";
+  document.getElementById("analisisFactoresInternos").value = ac.FACTORES_INTERNOS || "";
+  document.getElementById("analisisOtros").value = ac.OTROS || "";
+
+  // Bloque 7 – plan de acción
+  const tbodyPA = document.querySelector("#tablaPlanAccion tbody");
+  tbodyPA.innerHTML = "";
+  (p.planAccion || []).forEach(reg => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><textarea oninput="marcarDirty()">${reg.punto || ""}</textarea></td>
+      <td><textarea oninput="marcarDirty()">${reg.criterio || ""}</textarea></td>
+      <td><textarea oninput="marcarDirty()">${reg.acciones || ""}</textarea></td>
+      <td><input type="date" value="${reg.plazo || ""}" onchange="marcarDirty()" /></td>
+      <td class="text-center">
+        <button class="btn-danger" onclick="eliminarFilaPlanAccion(this)">X</button>
+      </td>
+    `;
+    tbodyPA.appendChild(tr);
+  });
+  if (!p.planAccion || !p.planAccion.length) {
+    anadirFilaPlanAccion();
+  }
+
+  // Bloque 8 – firma
+  document.getElementById("firmaNombreGestor").textContent = p.gestor;
+  document.getElementById("firmaFecha").value = p.firma && p.firma.fecha ? p.firma.fecha : hoyISO();
+}
+
+// ==== Navegación por bloques ====
+function scrollToBloque(id, tabEl) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({ behavior: "smooth", block: "start" });
+  document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
+  tabEl.classList.add("active");
+}
+
+// ==== Marcador de cambios ====
+function marcarDirty() {
+  dirty = true;
+}
+
+// ==== Recalcular KPIs ====
+function recalcularFacturacion() {
+  marcarDirty();
+  const real = toNum(document.getElementById("campoFacturacionReal").value);
+  const obj = toNum(document.getElementById("campoObjetivoMes").value);
+  let pctC = null;
+  let dif = null;
+  if (obj > 0) {
+    pctC = pct(real, obj);
+  }
+  dif = real - obj;
+
+  const kpiC = document.getElementById("kpiCumplimiento");
+  const kpiD = document.getElementById("kpiDiferencia");
+  if (pctC != null) {
+    kpiC.textContent = `Cumplimiento objetivo: ${pctC.toFixed(2)} %`;
+  } else {
+    kpiC.textContent = "Cumplimiento objetivo: –";
+  }
+  if (!isNaN(dif)) {
+    const s = dif >= 0 ? "+" : "";
+    kpiD.textContent = `Diferencia vs objetivo: ${s}${dif.toFixed(2)} €`;
+  } else {
+    kpiD.textContent = "Diferencia vs objetivo: –";
+  }
+}
+
+function recalcularDN() {
+  marcarDirty();
+  const fact = toNum(document.getElementById("dnFacturacionTotal").value);
+  const dnImp = toNum(document.getElementById("dnImporte").value);
+  const p = pct(dnImp, fact);
+  const out = document.getElementById("dnPorcentaje");
+  if (p != null) {
+    out.textContent = p.toFixed(2) + " %";
+  } else {
+    out.textContent = "–";
+  }
+  recalcularAplazamiento(); // usa facturación total
+  recalcularFormaPago();
+}
+
+function recalcularAplazamiento() {
+  marcarDirty();
+  const factTotal = toNum(document.getElementById("dnFacturacionTotal").value);
+  tramosAplazamiento.forEach((_, idx) => {
+    const fact = toNum(document.getElementById(`aplFact_${idx}`).value);
+    const p = pct(fact, factTotal);
+    document.getElementById(`aplPct_${idx}`).textContent =
+      p != null ? p.toFixed(2) + " %" : "–";
+  });
+}
+
+function recalcularFormaPago() {
+  marcarDirty();
+  const factTotal = toNum(document.getElementById("dnFacturacionTotal").value);
+
+  const rf = toNum(document.getElementById("fpReciboFact").value);
+  const rd = toNum(document.getElementById("fpReciboDN").value);
+  const nrf = toNum(document.getElementById("fpNoReciboFact").value);
+  const nrd = toNum(document.getElementById("fpNoReciboDN").value);
+
+  const rPctDN = pct(rd, rf);
+  const rPctPeso = pct(rf, factTotal);
+  const nrPctDN = pct(nrd, nrf);
+  const nrPctPeso = pct(nrf, factTotal);
+
+  document.getElementById("fpReciboPctDN").textContent =
+    rPctDN != null ? rPctDN.toFixed(2) + " %" : "–";
+  document.getElementById("fpReciboPctPeso").textContent =
+    rPctPeso != null ? rPctPeso.toFixed(2) + " %" : "–";
+  document.getElementById("fpNoReciboPctDN").textContent =
+    nrPctDN != null ? nrPctDN.toFixed(2) + " %" : "–";
+  document.getElementById("fpNoReciboPctPeso").textContent =
+    nrPctPeso != null ? nrPctPeso.toFixed(2) + " %" : "–";
+}
+
+function recalcularIncidencias() {
+  marcarDirty();
+  const total = toNum(document.getElementById("incFormTotal").value);
+  const con = toNum(document.getElementById("incFormCon").value);
+  const p = pct(con, total);
+  document.getElementById("incFormPctCon").textContent =
+    p != null ? p.toFixed(2) + " %" : "–";
+}
+
+// ==== Plan de acción ====
+function anadirFilaPlanAccion(punto = "", criterio = "", acciones = "", plazo = "") {
+  marcarDirty();
+  const tbody = document.querySelector("#tablaPlanAccion tbody");
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td><textarea oninput="marcarDirty()">${punto}</textarea></td>
+    <td><textarea oninput="marcarDirty()">${criterio}</textarea></td>
+    <td><textarea oninput="marcarDirty()">${acciones}</textarea></td>
+    <td><input type="date" value="${plazo}" onchange="marcarDirty()" /></td>
+    <td class="text-center">
+      <button class="btn-danger" onclick="eliminarFilaPlanAccion(this)">X</button>
+    </td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function eliminarFilaPlanAccion(btn) {
+  marcarDirty();
+  const tr = btn.closest("tr");
+  tr.remove();
+}
+
+function generarPropuestaPlanAccion() {
+  marcarDirty();
+  const tbody = document.querySelector("#tablaPlanAccion tbody");
+  tbody.innerHTML = "";
+
+  const fReal = toNum(document.getElementById("campoFacturacionReal").value);
+  const fObj = toNum(document.getElementById("campoObjetivoMes").value);
+  const cumple = fObj > 0 ? pct(fReal, fObj) : null;
+
+  const rCapt = toNum(document.getElementById("ratioCaptacion").value);
+  const rVC = toNum(document.getElementById("ratioVC").value);
+
+  const dnFact = toNum(document.getElementById("dnFacturacionTotal").value);
+  const dnImp = toNum(document.getElementById("dnImporte").value);
+  const dnPct = pct(dnImp, dnFact);
+
+  const incTotal = toNum(document.getElementById("incFormTotal").value);
+  const incCon = toNum(document.getElementById("incFormCon").value);
+  const incPct = pct(incCon, incTotal);
+
+  const tFact = document.getElementById("analisisFacturacion").value.toLowerCase();
+  const tRat = document.getElementById("analisisRatios").value.toLowerCase();
+  const tDev = document.getElementById("analisisDevoluciones").value.toLowerCase();
+  const tInc = document.getElementById("analisisIncidencias").value.toLowerCase();
+  const tLlam = document.getElementById("analisisLlamadas").value.toLowerCase();
+  const tInternos = document.getElementById("analisisFactoresInternos").value.toLowerCase();
+  const tOtros = document.getElementById("analisisOtros").value.toLowerCase();
+
+  // Umbrales orientativos
+  const UMBRAL_CUMPL_OBJ = 95;
+  const UMBRAL_RATIO_CAPT = 15;
+  const UMBRAL_RATIO_VC = 10;
+  const UMBRAL_DN_ALTA = 9;
+  const UMBRAL_INC_ALTA = 10;
+
+  const hoy = new Date();
+  const mesSel = parseInt(document.getElementById("campoMes").value || (hoy.getMonth() + 1));
+  const anioSel = parseInt(document.getElementById("campoAnio").value || hoy.getFullYear());
+  const finMes = new Date(anioSel, mesSel, 0); // último día del mes
+  const plazoISO = finMes.toISOString().slice(0,10);
+
+  // 1) Cumplimiento objetivo
+  if (cumple != null && cumple < UMBRAL_CUMPL_OBJ) {
+    anadirFilaPlanAccion(
+      "Mejorar cumplimiento de objetivo de facturación",
+      `Alcanzar al menos el ${UMBRAL_CUMPL_OBJ.toFixed(0)} % de cumplimiento del objetivo mensual`,
+      "Revisar planificación diaria con el coordinador; fijar mínimo de llamadas efectivas al día; priorizar clientes con mayor potencial de cierre.",
+      plazoISO
+    );
+  }
+
+  // 2) Ratios captación
+  if (rCapt > 0 && rCapt < UMBRAL_RATIO_CAPT) {
+    anadirFilaPlanAccion(
+      "Incrementar ratio de venta en captación",
+      `Subir el ratio de captación de ${rCapt.toFixed(2)} % a al menos ${UMBRAL_RATIO_CAPT.toFixed(0)} %`,
+      "Revisar argumentario de captación; realizar role plays semanales; revisar cierres fallidos con el coordinador para detectar patrones.",
+      plazoISO
+    );
+  }
+
+  // 3) Ratios VC
+  if (rVC > 0 && rVC < UMBRAL_RATIO_VC) {
+    anadirFilaPlanAccion(
+      "Mejorar ratio de venta VC",
+      `Aumentar el ratio de venta VC hasta al menos ${UMBRAL_RATIO_VC.toFixed(0)} %`,
+      "Reforzar propuestas de valor en llamadas; focalizar en clientes con mayor propensión a contratar VC; seguimiento específico de propuestas abiertas.",
+      plazoISO
+    );
+  }
+
+  // 4) DN alta
+  if (dnPct != null && dnPct > UMBRAL_DN_ALTA) {
+    anadirFilaPlanAccion(
+      "Reducir devolución neta sobre facturado",
+      `Reducir el % de DN desde ${dnPct.toFixed(2)} % hasta un máximo de ${UMBRAL_DN_ALTA.toFixed(0)} %`,
+      "Revisar semanalmente devoluciones y motivos; evitar aplazamientos largos salvo casos justificados; confirmar datos de cobro antes de cerrar la venta.",
+      plazoISO
+    );
+  }
+
+  // 5) Incidencias formación altas
+  if (incPct != null && incPct > UMBRAL_INC_ALTA) {
+    anadirFilaPlanAccion(
+      "Disminuir incidencias en ventas de formación",
+      `Reducir el % de facturación con incidencia de ${incPct.toFixed(2)} % a menos de ${UMBRAL_INC_ALTA.toFixed(0)} %`,
+      "Revisar documentación de formación antes de tramitar; validar con administración dudas de facturación; checklist previo al cierre de cada venta de formación.",
+      plazoISO
+    );
+  }
+
+  // 6) Palabras clave en análisis (llamadas, ambiente, organización, etc.)
+  const textoGlobal = [
+    tFact,tRat,tDev,tInc,tLlam,tInternos,tOtros
+  ].join(" ");
+
+  const lowered = textoGlobal.toLowerCase();
+  if (/llamada/.test(lowered)) {
+    anadirFilaPlanAccion(
+      "Mejorar volumen y calidad de llamadas",
+      "Cumplir un mínimo de llamadas efectivas al día con ratio de conversión objetivo",
+      "Definir objetivo diario de llamadas; revisar grabaciones con el coordinador; aplicar checklist de calidad en cada llamada.",
+      plazoISO
+    );
+  }
+  if (/ambiente|clima|motivaci/.test(lowered)) {
+    anadirFilaPlanAccion(
+      "Mejorar factores internos y clima de trabajo",
+      "Aumentar la estabilidad y motivación en el puesto durante el mes",
+      "Reunión semanal con el coordinador para seguimiento; acordar horarios realistas; revisar cargas de trabajo y frenos personales.",
+      plazoISO
+    );
+  }
+  if (/organiza|planifica/.test(lowered)) {
+    anadirFilaPlanAccion(
+      "Mejorar organización y planificación diaria",
+      "Cumplir una planificación diaria cerrada con prioridad de tareas clave",
+      "Planificar el día anterior la jornada siguiente; bloques de trabajo por tipo de llamada; revisión de cumplimiento al final del día.",
+      plazoISO
+    );
+  }
+
+  // Si no ha salido nada, añadimos una fila vacía
+  if (!document.querySelector("#tablaPlanAccion tbody tr")) {
+    anadirFilaPlanAccion();
+  }
+}
+
+// ==== Gestión de plan anterior por combinación gestor+mes+año ====
+function onCambioGestorMesAnio() {
+  marcarDirty();
+  document.getElementById("firmaNombreGestor").textContent =
+    document.getElementById("campoGestor").value || "";
+  const gestor = document.getElementById("campoGestor").value;
+  const mes = parseInt(document.getElementById("campoMes").value || "0");
+  const anio = parseInt(document.getElementById("campoAnio").value || "0");
+
+  if (!gestor || !mes || !anio) return;
+
+  const prev = planes
+    .filter(p => p.gestor === gestor && (p.anio < anio || (p.anio === anio && p.mes < mes)))
+    .sort((a,b) => (b.anio - a.anio) || (b.mes - a.mes))[0];
+
+  const aviso = document.getElementById("bloquePlanAnteriorAviso");
+  const tbodySeg = document.querySelector("#tablaSeguimientoAnterior tbody");
+  tbodySeg.innerHTML = "";
+
+  if (prev) {
+    document.getElementById("bloqueSeguimientoAnterior").style.display = "block";
+    const pctC = prev.facturacion && prev.facturacion.pctCumplimiento != null
+      ? prev.facturacion.pctCumplimiento.toFixed(2) + " %"
+      : "–";
+    aviso.innerHTML =
+      `<span class="pill">Plan anterior: ${formatearMesAnio(prev.mes, prev.anio)}</span> ` +
+      `<span class="pill">Cumplimiento objetivo: ${pctC}</span> ` +
+      `<span class="pill">Estado: ${prev.estadoPlan || "Borrador"}</span>`;
+
+    (prev.planAccion || []).forEach(punto => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${punto.punto || ""}</td>
+        <td>${punto.criterio || ""}</td>
+        <td>
+          <select onchange="marcarDirty()">
+            <option value="">–</option>
+            <option value="CONSEGUIDO">Conseguido</option>
+            <option value="NO_CONSEGUIDO">No conseguido</option>
+            <option value="NO_APLICA">No aplica</option>
+          </select>
+        </td>
+        <td><input type="text" oninput="marcarDirty()" /></td>
+      `;
+      tbodySeg.appendChild(tr);
+    });
+
+  } else {
+    aviso.innerHTML = "No hay planes anteriores para este gestor.";
+    document.getElementById("bloqueSeguimientoAnterior").style.display = "none";
+  }
+}
+
+// ==== Guardar plan / generar Word ====
+function recogerPlanDesdeFormulario() {
+  const gestor = document.getElementById("campoGestor").value;
+  const delegacion = document.getElementById("campoDelegacion").value;
+  const mes = parseInt(document.getElementById("campoMes").value || "0");
+  const anio = parseInt(document.getElementById("campoAnio").value || "0");
+  const fechaCreacion = document.getElementById("campoFechaCreacion").value || hoyISO();
+  const estadoPlan = document.getElementById("campoEstadoPlan").value || "Borrador";
+
+  const factReal = toNum(document.getElementById("campoFacturacionReal").value);
+  const factObj = toNum(document.getElementById("campoObjetivoMes").value);
+  const pctCumpl = factObj > 0 ? pct(factReal, factObj) : null;
+  const dif = factReal - factObj;
+
+  const ratios = {
+    gestionMedia: toNum(document.getElementById("ratioGestionMedia").value),
+    ventaCaptacion: toNum(document.getElementById("ratioCaptacion").value),
+    ventaCAspy: toNum(document.getElementById("ratioCAspy").value),
+    ventaCPS: toNum(document.getElementById("ratioCPS").value),
+    ventaLegalitas: toNum(document.getElementById("ratioLegalitas").value),
+    ventaVC: toNum(document.getElementById("ratioVC").value),
+    ticketMedioTotal: toNum(document.getElementById("ticketMedioTotal").value),
+    ticketMedioCaptacion: toNum(document.getElementById("ticketMedioCaptacion").value)
+  };
+
+  const dnFact = toNum(document.getElementById("dnFacturacionTotal").value);
+  const dnImp = toNum(document.getElementById("dnImporte").value);
+  const dnPct = pct(dnImp, dnFact);
+
+  const apl = {};
+  tramosAplazamiento.forEach((tramo, idx) => {
+    const fact = toNum(document.getElementById(`aplFact_${idx}`).value);
+    const p = pct(fact, dnFact);
+    apl[tramo] = {
+      facturacion: fact || 0,
+      pct: p != null ? p : null
+    };
+  });
+
+  const fpRecFact = toNum(document.getElementById("fpReciboFact").value);
+  const fpRecDN = toNum(document.getElementById("fpReciboDN").value);
+  const fpNoRecFact = toNum(document.getElementById("fpNoReciboFact").value);
+  const fpNoRecDN = toNum(document.getElementById("fpNoReciboDN").value);
+
+  const fp = {
+    recibo: {
+      facturacion: fpRecFact,
+      dn: fpRecDN,
+      pctDN: pct(fpRecDN, fpRecFact),
+      pctPeso: pct(fpRecFact, dnFact)
+    },
+    noRecibo: {
+      facturacion: fpNoRecFact,
+      dn: fpNoRecDN,
+      pctDN: pct(fpNoRecDN, fpNoRecFact),
+      pctPeso: pct(fpNoRecFact, dnFact)
+    }
+  };
+
+  const incTotal = toNum(document.getElementById("incFormTotal").value);
+  const incSin = toNum(document.getElementById("incFormSin").value);
+  const incCon = toNum(document.getElementById("incFormCon").value);
+  const incPct = pct(incCon, incTotal);
+
+  const analisisCuant = {
+    FACTURACION: document.getElementById("analisisFacturacion").value,
+    RATIOS: document.getElementById("analisisRatios").value,
+    DEDICACION: document.getElementById("analisisDedicacion").value,
+    DEVOLUCIONES: document.getElementById("analisisDevoluciones").value,
+    INCIDENCIAS: document.getElementById("analisisIncidencias").value
+  };
+
+  const analisisCual = {
+    LLAMADAS: document.getElementById("analisisLlamadas").value,
+    FACTORES_INTERNOS: document.getElementById("analisisFactoresInternos").value,
+    OTROS: document.getElementById("analisisOtros").value
+  };
+
+  // Plan de acción
+  const planAccion = [];
+  document.querySelectorAll("#tablaPlanAccion tbody tr").forEach(tr => {
+    const tds = tr.querySelectorAll("td");
+    const punto = tds[0].querySelector("textarea").value.trim();
+    const criterio = tds[1].querySelector("textarea").value.trim();
+    const acciones = tds[2].querySelector("textarea").value.trim();
+    const plazo = tds[3].querySelector("input").value;
+    if (punto || criterio || acciones || plazo) {
+      planAccion.push({
+        punto,
+        criterio,
+        acciones,
+        plazo,
+        origen: "MIX"
+      });
+    }
+  });
+
+  // Seguimiento plan anterior
+  const planAnteriorSeguimiento = [];
+  document.querySelectorAll("#tablaSeguimientoAnterior tbody tr").forEach(tr => {
+    const tds = tr.querySelectorAll("td");
+    const puntoAnterior = tds[0].textContent;
+    const criterioAnterior = tds[1].textContent;
+    const estado = tds[2].querySelector("select").value;
+    const comentario = tds[3].querySelector("input").value;
+    planAnteriorSeguimiento.push({
+      puntoAnterior,
+      criterioAnterior,
+      estado,
+      comentario
+    });
+  });
+
+  const miniResumen = planAccion.length
+    ? "Focos: " + planAccion.slice(0, 3).map(x => x.punto).join("; ")
+    : "";
+
+  const firma = {
+    fecha: document.getElementById("firmaFecha").value || hoyISO()
+  };
+
+  let id = planActualId;
+  if (!id) {
+    id = `${gestor}_${mes}_${anio}_${Date.now()}`;
+  }
+
+  return {
+    id,
+    gestor,
+    delegacion,
+    mes,
+    anio,
+    fechaCreacion,
+    estadoPlan,
+    facturacion: {
+      real: factReal,
+      objetivo: factObj,
+      pctCumplimiento: pctCumpl,
+      diferencia: dif
+    },
+    ratios,
+    dn: {
+      facturacionTotal: dnFact,
+      dnImporte: dnImp,
+      pctDN: dnPct
+    },
+    aplazamiento: apl,
+    formaPago: fp,
+    incidencias: {
+      total: incTotal,
+      sin: incSin,
+      con: incCon,
+      pctConIncidencia: incPct
+    },
+    analisisCuant,
+    analisisCual,
+    planAccion,
+    planAnteriorSeguimiento,
+    planAnteriorInfo: null, // se podría rellenar si quieres arrastrar info
+    resumenCorto: miniResumen,
+    firma
+  };
+}
+
+function validarPlan(plan) {
+  const errores = [];
+
+  if (!plan.gestor) errores.push("Gestor obligatorio.");
+  if (!plan.mes) errores.push("Mes obligatorio.");
+  if (!plan.anio) errores.push("Año obligatorio.");
+
+  if (!plan.facturacion.real || !plan.facturacion.objetivo) {
+    errores.push("Facturación real y objetivo son obligatorios.");
+  }
+
+  if (!plan.planAccion.length) {
+    errores.push("Debe haber al menos un punto en el plan de acción.");
+  }
+
+  // Validar plazos dentro del mes
+  if (plan.planAccion.length) {
+    const finMes = new Date(plan.anio, plan.mes, 0); // último día
+    const finISO = finMes.toISOString().slice(0, 10);
+    plan.planAccion.forEach((p) => {
+      if (p.plazo && p.plazo > finISO) {
+        errores.push(`Plazo fuera de mes para el punto "${p.punto}".`);
+      }
+    });
+  }
+
+  return errores;
+}
+
+function guardarPlan(generarWord) {
+  const plan = recogerPlanDesdeFormulario();
+  const errores = validarPlan(plan);
+  if (errores.length) {
+    alert("Revisa estos puntos antes de continuar:\n\n- " + errores.join("\n- "));
+    return;
+  }
+
+  const idx = planes.findIndex(x => x.id === plan.id);
+  if (idx >= 0) {
+    planes[idx] = plan;
+  } else {
+    planes.push(plan);
+  }
+  planActualId = plan.id;
+  guardarEnLocalStorage();
+  dirty = false;
+  alert("Plan guardado correctamente.");
+
+  if (generarWord) {
+    generarWordDesdeObjeto(plan);
+  }
+}
+
+// ==== Generar Word (DOC) ====
+function generarWordDesdeObjeto(plan) {
+  const html = construirHtmlWord(plan);
+  const blob = new Blob(['\ufeff', html], {
+    type: 'application/msword'
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  const safeGestor = plan.gestor.replace(/[^a-z0-9]+/gi, "_");
+  link.download = `Plan_trabajo_VN_TELF_${safeGestor}_${plan.mes}_${plan.anio}.doc`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+function construirHtmlWord(plan) {
+  function fmt€(n) {
+    if (n == null || isNaN(n)) return "–";
+    return n.toFixed(2) + " €";
+  }
+  function fmt%(n) {
+    if (n == null || isNaN(n)) return "–";
+    return n.toFixed(2) + " %";
+  }
+  function esc(t) {
+    return (t || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  const nombresMes = ["","Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+
+  const planAnteriorHtml = plan.planAnteriorSeguimiento && plan.planAnteriorSeguimiento.length
+    ? `
+    <h3>Seguimiento plan anterior</h3>
+    <table border="1" cellspacing="0" cellpadding="3">
+      <tr>
+        <th>Punto de mejora anterior</th>
+        <th>Criterio</th>
+        <th>Estado</th>
+        <th>Comentario</th>
+      </tr>
+      ${plan.planAnteriorSeguimiento.map(r => `
+      <tr>
+        <td>${esc(r.puntoAnterior)}</td>
+        <td>${esc(r.criterioAnterior)}</td>
+        <td>${esc(r.estado || "")}</td>
+        <td>${esc(r.comentario || "")}</td>
+      </tr>`).join("")}
+    </table>
+    ` : "";
+
+  const planAccionHtml = plan.planAccion && plan.planAccion.length
+    ? plan.planAccion.map(p => `
+      <tr>
+        <td>${esc(p.punto)}</td>
+        <td>${esc(p.criterio)}</td>
+        <td>${esc(p.acciones)}</td>
+        <td>${esc(p.plazo || "")}</td>
+      </tr>`).join("")
+    : `<tr><td colspan="4">Sin puntos definidos</td></tr>`;
+
+  const aplRows = tramosAplazamiento.map(tramo => {
+    const a = (plan.aplazamiento && plan.aplazamiento[tramo]) || {};
+    return `
+      <tr>
+        <td>${esc(tramo)}</td>
+        <td>${fmt€(a.facturacion || 0)}</td>
+        <td>${fmt%(a.pct)}</td>
+      </tr>`;
+  }).join("");
+
+  const fp = plan.formaPago || {};
+  const fr = fp.recibo || {};
+  const fnr = fp.noRecibo || {};
+
+  const html = `
+  <html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Plan de trabajo VN_TELF</title>
+  </head>
+  <body>
+    <div style="text-align:center; margin-bottom:10px;">
+      <h1 style="margin:0;">CONVERSIA</h1>
+      <h2 style="margin:4px 0;">PLAN DE TRABAJO MENSUAL – VN_TELF</h2>
+    </div>
+
+    <h3>1. Identificación del plan</h3>
+    <table border="1" cellspacing="0" cellpadding="3">
+      <tr><th>Gestor</th><td>${esc(plan.gestor)}</td></tr>
+      <tr><th>Equipo / Delegación</th><td>VN_TELF / ${esc(plan.delegacion || "")}</td></tr>
+      <tr><th>Coordinador</th><td>VN_TELF</td></tr>
+      <tr><th>Mes / Año</th><td>${nombresMes[plan.mes]} ${plan.anio}</td></tr>
+      <tr><th>Fecha creación</th><td>${esc(plan.fechaCreacion || "")}</td></tr>
+      <tr><th>Estado del plan</th><td>${esc(plan.estadoPlan || "Borrador")}</td></tr>
+    </table>
+
+    <h3>2. Facturación objetivo</h3>
+    <table border="1" cellspacing="0" cellpadding="3">
+      <tr><th>Facturación real del mes</th><td>${fmt€(plan.facturacion.real)}</td></tr>
+      <tr><th>Objetivo de facturación del mes</th><td>${fmt€(plan.facturacion.objetivo)}</td></tr>
+      <tr><th>% cumplimiento objetivo</th><td>${fmt%(plan.facturacion.pctCumplimiento)}</td></tr>
+      <tr><th>Diferencia en euros</th><td>${fmt€(plan.facturacion.diferencia)}</td></tr>
+    </table>
+
+    <h3>3. Datos cuantitativos – Ratios de gestión</h3>
+    <table border="1" cellspacing="0" cellpadding="3">
+      <tr>
+        <th>Gestión media</th>
+        <th>Ratio venta captación</th>
+        <th>Ratio venta C.Aspy</th>
+        <th>Ratio venta CPS</th>
+        <th>Ratio venta Legalitas</th>
+        <th>Ratio venta VC</th>
+        <th>Ticket medio total</th>
+        <th>Ticket medio captación</th>
+      </tr>
+      <tr>
+        <td>${plan.ratios.gestionMedia || ""} %</td>
+        <td>${plan.ratios.ventaCaptacion || ""} %</td>
+        <td>${plan.ratios.ventaCAspy || ""} %</td>
+        <td>${plan.ratios.ventaCPS || ""} %</td>
+        <td>${plan.ratios.ventaLegalitas || ""} %</td>
+        <td>${plan.ratios.ventaVC || ""} %</td>
+        <td>${fmt€(plan.ratios.ticketMedioTotal)}</td>
+        <td>${fmt€(plan.ratios.ticketMedioCaptacion)}</td>
+      </tr>
+    </table>
+
+    <h3>4. Devolución neta, aplazamiento y forma de pago</h3>
+    <h4>4.1 Devolución neta</h4>
+    <table border="1" cellspacing="0" cellpadding="3">
+      <tr><th>Facturación vencida total</th><td>${fmt€(plan.dn.facturacionTotal)}</td></tr>
+      <tr><th>Devolución neta</th><td>${fmt€(plan.dn.dnImporte)}</td></tr>
+      <tr><th>% DN sobre facturado</th><td>${fmt%(plan.dn.pctDN)}</td></tr>
+    </table>
+
+    <h4>4.2 Distribución por aplazamiento</h4>
+    <table border="1" cellspacing="0" cellpadding="3">
+      <tr>
+        <th>Tramo aplazamiento</th>
+        <th>Facturación</th>
+        <th>% sobre total</th>
+      </tr>
+      ${aplRows}
+    </table>
+
+    <h4>4.3 Distribución por forma de pago</h4>
+    <table border="1" cellspacing="0" cellpadding="3">
+      <tr>
+        <th>Forma de pago</th>
+        <th>Facturación</th>
+        <th>DN</th>
+        <th>% DN</th>
+        <th>% peso facturación</th>
+      </tr>
+      <tr>
+        <td>Recibo</td>
+        <td>${fmt€(fr.facturacion)}</td>
+        <td>${fmt€(fr.dn)}</td>
+        <td>${fmt%(fr.pctDN)}</td>
+        <td>${fmt%(fr.pctPeso)}</td>
+      </tr>
+      <tr>
+        <td>No recibo</td>
+        <td>${fmt€(fnr.facturacion)}</td>
+        <td>${fmt€(fnr.dn)}</td>
+        <td>${fmt%(fnr.pctDN)}</td>
+        <td>${fmt%(fnr.pctPeso)}</td>
+      </tr>
+    </table>
+
+    <h3>5. Incidencias de formación</h3>
+    <table border="1" cellspacing="0" cellpadding="3">
+      <tr>
+        <th>Facturación formación total</th>
+        <th>Facturación sin incidencia</th>
+        <th>Facturación con incidencia</th>
+        <th>% facturación con incidencia</th>
+      </tr>
+      <tr>
+        <td>${fmt€(plan.incidencias.total)}</td>
+        <td>${fmt€(plan.incidencias.sin)}</td>
+        <td>${fmt€(plan.incidencias.con)}</td>
+        <td>${fmt%(plan.incidencias.pctConIncidencia)}</td>
+      </tr>
+    </table>
+
+    <h3>6. Análisis cuantitativo</h3>
+    <h4>FACTURACIÓN</h4>
+    <p>${esc(plan.analisisCuant.FACTURACION)}</p>
+    <h4>RATIOS</h4>
+    <p>${esc(plan.analisisCuant.RATIOS)}</p>
+    <h4>DEDICACIÓN</h4>
+    <p>${esc(plan.analisisCuant.DEDICACION)}</p>
+    <h4>DEVOLUCIONES</h4>
+    <p>${esc(plan.analisisCuant.DEVOLUCIONES)}</p>
+    <h4>INCIDENCIAS</h4>
+    <p>${esc(plan.analisisCuant.INCIDENCIAS)}</p>
+
+    <h3>7. Análisis cualitativo</h3>
+    <h4>LLAMADAS</h4>
+    <p>${esc(plan.analisisCual.LLAMADAS)}</p>
+    <h4>FACTORES INTERNOS</h4>
+    <p>${esc(plan.analisisCual.FACTORES_INTERNOS)}</p>
+    <h4>OTROS / OBSERVACIONES</h4>
+    <p>${esc(plan.analisisCual.OTROS)}</p>
+
+    <h3>8. Plan de acción mensual</h3>
+    <table border="1" cellspacing="0" cellpadding="3">
+      <tr>
+        <th>Punto de mejora</th>
+        <th>Criterios de evaluación</th>
+        <th>Acciones concretas</th>
+        <th>Plazo</th>
+      </tr>
+      ${planAccionHtml}
+    </table>
+
+    ${planAnteriorHtml}
+
+    <h3>9. Firma</h3>
+    <table border="0" cellspacing="0" cellpadding="10" width="100%">
+      <tr>
+        <td width="50%" align="center">
+          Gestor<br/><br/><br/>
+          _______________________________<br/>
+          ${esc(plan.gestor)}
+        </td>
+        <td width="50%" align="center">
+          Coordinador<br/><br/><br/>
+          _______________________________<br/>
+          VN_TELF
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center">
+          Fecha de firma: ${esc(plan.firma && plan.firma.fecha ? plan.firma.fecha : "")}
+        </td>
+      </tr>
+    </table>
+
+  </body>
+  </html>
+  `;
+  return html;
+}
+</script>
+
+</body>
+</html>
